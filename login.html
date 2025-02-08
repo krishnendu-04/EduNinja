@@ -1,0 +1,53 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="login-container">
+  <div class="auth-container">
+    <h2>Login to Your Account</h2>
+
+    <!-- Login Form -->
+<form id="loginForm" onsubmit="handleLogin(event)">
+  <!-- Email Input -->
+  <div class="form-group">
+    <label for="email">Email:</label>
+    <input type="email" id="email" placeholder="Enter your email" required>
+  </div>
+
+  <!-- Password Input -->
+  <div class="form-group">
+    <label for="password">Password:</label>
+    <input type="password" id="password" placeholder="Enter your password" required>
+  </div>
+
+  <!-- Submit Button -->
+  <button type="submit">Login</button> 
+</form>
+<script>
+  function handleLogin(event) {
+    event.preventDefault(); // Prevent form submission
+    
+    // Perform any form validation or login checks here
+    
+    // Redirect after processing
+    window.location.href = "/index.html";
+  }
+</script>
+    <!-- Sign-up Link -->
+    <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+
+    <!-- Loading Spinner (Optional) -->
+    <div id="loading" class="loading" style="display:none;">Logging in...</div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
+
+
