@@ -1,96 +1,51 @@
-import requests
+
+
+import os
 import logging
-import isodate
+from supabase import create_client, Client
+from googleapiclient.discovery import build
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+# Set up logging
+logging.basicConfig(level=logging.INFO)
 
-# YouTube API Key (Replace with your actual key)
-YOUTUBE_API_KEY = "AIzaSyB1xQTaELG_XQ5BbZjwVx1y_-4M1uzmlP0"
+# Supabase configuration
+url = "https://dkwojszgvuntyccquebc.supabase.co"
+key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRrd29qc3pndnVudHljY3F1ZWJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkwNDY1ODQsImV4cCI6MjA1NDYyMjU4NH0.M7VKOCm0qYzBxX-I7busit5RB91gJV0PjRUzybNoZsI"
+supabase: Client = create_client(url, key)
 
-def fetch_youtube_courses(query, max_results=5):
-    """
-    Fetches YouTube courses based on a given query.
-    Retrieves video title, URL, thumbnail, views, duration, likes, comments, channel name, and upload date.
-    """
+# Initialize YouTube API
+API_KEY = 'AIzaSyB1xQTaELG_XQ5BbZjwVx1y_-4M1uzmlP0'
+youtube = build('youtube', 'v3', developerKey=API_KEY)
+
+def fetch_youtube_courses(query):
     logging.info(f"📡 Fetching courses for '{query}' from YouTube API...")
-
-    # YouTube Search API URL
-    search_url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults={max_results}&q={query}%20full%20course&key={YOUTUBE_API_KEY}"
-    search_response = requests.get(search_url)
-
-    if search_response.status_code != 200:
-        logging.error(f"❌ API Error {search_response.status_code}: {search_response.text}")
-        return []
-
-    search_data = search_response.json()
     
-    # Extract video IDs
-    video_ids = [item["id"]["videoId"] for item in search_data.get("items", []) if "videoId" in item["id"]]
-    if not video_ids:
-        logging.warning("⚠️ No videos found.")
-        return []
-
-    video_ids_str = ",".join(video_ids)
-
-    # YouTube Video Details API URL
-    details_url = f"https://www.googleapis.com/youtube/v3/videos?part=statistics,contentDetails,snippet&id={video_ids_str}&key={YOUTUBE_API_KEY}"
-    details_response = requests.get(details_url)
-
-    if details_response.status_code != 200:
-        logging.error(f"❌ API Error {details_response.status_code}: {details_response.text}")
-        return []
-
-    details_data = details_response.json()
+    request = youtube.search().list(
+        part='snippet',
+        q=query,
+        type='video',
+        maxResults=5
+    )
     
-    courses = []
-    for item in details_data.get("items", []):
-        video_id = item["id"]
-        snippet = item["snippet"]
-        stats = item.get("statistics", {})
-        content_details = item.get("contentDetails", {})
+    response = request.execute()
+    
+    # Prepare data to store in Supabase
+    for item in response['items']:
+        video_id = item['id']['videoId']
+        course_data = {
+            "title": item['snippet']['title'],
+            "description": item['snippet']['description'],
+            "video_url": f"https://www.youtube.com/watch?v={video_id}",
+            "published_at": item['snippet']['publishedAt'],
+            "thumbnail": item['snippet']['thumbnails']['high']['url']
+        }
 
-        title = snippet["title"]
-        thumbnail = snippet["thumbnails"]["high"]["url"]
-        url = f"https://www.youtube.com/watch?v={video_id}"
-        channel = snippet["channelTitle"]
-        upload_date = snippet["publishedAt"].split("T")[0]  # Extract only the date
+        # Insert into Supabase table 'courses'
+        response = supabase.table('courses').insert(course_data).execute()
+        print(response.status_code, response.json())
+        logging.info(f"Added course: {item['snippet']['title']}")
 
-        views = stats.get("viewCount", "0")
-        likes = stats.get("likeCount", "0")
-        comments = stats.get("commentCount", "0")
+# User input
+query = input("Enter a topic to search for courses: ")
+fetch_youtube_courses(query)
 
-        # Convert YouTube's ISO 8601 duration to readable format
-        duration_iso = content_details.get("duration", "N/A")
-        try:
-            duration = str(isodate.parse_duration(duration_iso))
-        except:
-            duration = "Unknown"
-
-        courses.append({
-            "title": title,
-            "url": url,
-            "thumbnail": thumbnail,
-            "views": views,
-            "likes": likes,
-            "comments": comments,
-            "duration": duration,
-            "channel": channel,
-            "upload_date": upload_date
-        })
-
-    logging.info(f"✅ Fetched {len(courses)} courses successfully!")
-    return courses
-
-# Example Usage
-if __name__ == "__main__":
-    query = input("Enter a topic to search for courses: ")
-    courses = fetch_youtube_courses(query)
-
-    for idx, course in enumerate(courses, 1):
-        print(f"\n📚 Course {idx}: {course['title']}")
-        print(f"🔗 URL: {course['url']}")
-        print(f"👤 Channel: {course['channel']}")
-        print(f"📅 Upload Date: {course['upload_date']}")
-        print(f"⏳ Duration: {course['duration']}")
-        print(f"👀 Views: {course['views']} | 👍 Likes: {course['likes']} | 💬 Comments: {course['comments']}")

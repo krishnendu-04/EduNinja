@@ -1,26 +1,31 @@
-from flask import Flask, jsonify
-from flask_cors import CORS  # Import CORS
-import sqlite3
+from flask import Flask, render_template, request, jsonify
+from supabase import create_client, Client
 
+# Set up Flask app
 app = Flask(__name__)
-CORS(app)  # Enable CORS globally
+
+# Supabase configuration
+url = "https://dkwojszgvuntyccquebc.supabase.co"
+key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRrd29qc3pndnVudHljY3F1ZWJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkwNDY1ODQsImV4cCI6MjA1NDYyMjU4NH0.M7VKOCm0qYzBxX-I7busit5RB91gJV0PjRUzybNoZsI"
+supabase: Client = create_client(url, key)
 
 @app.route('/')
 def home():
-    return jsonify({"message": "Welcome to EduNinja API!"})
+    return render_template('index.html')
 
-@app.route('/courses', methods=['GET'])
-def get_courses():
-    print("🔥 GET /courses route hit!")  # Debug log
+@app.route('/search', methods=['GET'])
+def search_courses():
+    query = request.args.get('query')
+    if query:
+        courses = fetch_courses_from_supabase(query)
+        return jsonify(courses)
+    else:
+        return jsonify({"error": "No query provided"}), 400
 
-    conn = sqlite3.connect("courses.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT title, url, thumbnail FROM courses")
-    courses = [{"title": row[0], "url": row[1], "thumbnail": row[2]} for row in cursor.fetchall()]
-    conn.close()
-    
-    print(f"🔥 Returning {len(courses)} courses")  # Debug log
-    return jsonify(courses)
+def fetch_courses_from_supabase(query):
+    # Fetch courses from Supabase table
+    courses = supabase.table('courses').select('*').like('title', f"%{query}%").execute()
+    return courses.data
 
 if __name__ == '__main__':
     app.run(debug=True)
