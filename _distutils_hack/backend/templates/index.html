@@ -1,26 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Course Finder</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Finder</title>
 </head>
 <body>
-  <header>
-    <h1>Course Finder</h1>
-    <p>Find the best online courses.</p>
-  </header>
+    <h1>Welcome to Course Finder</h1>
+    <form action="/search" method="GET">
+        <input type="text" name="query" placeholder="Search for a course..." required>
+        <button type="submit">Search</button>
+    </form>
 
-  <main>
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Search for courses...">
-      <button id="searchBtn">Search</button>
-    </div>
+    <h2>Available Courses:</h2>
+    <ul>
+        {% for course in courses %}
+            <li><a href="{{ course.url }}" target="_blank">{{ course.title }}</a></li>
+        {% endfor %}
+    </ul>
 
-    <div id="resultsContainer"></div>
-  </main>
-
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <a href="/logout">Logout</a>
 </body>
 </html>
