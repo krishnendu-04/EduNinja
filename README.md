@@ -10,10 +10,6 @@ EduNinja is a web application that aids users in finding the best online courses
 - Member 3: Krishnendu C - SCMS School of Engineering & Technology
 
 
-### Hosted Project Link
-[mention your project hosted project link here]
-
-
 ### Project Description🗣️
 The AI-Powered Course Finder Web App is a smart platform that provides users with a way to find the best suitable online courses based on their preferences. The app pulls real-time course data from popular e-learning servers, including Coursera, Udemy, and youtube, using web scraping and APIs, arranges the data into structured databases, and presents personalized course recommendations via an intuitive web interface. 
 
