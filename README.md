@@ -4,20 +4,29 @@ EduNinja is a web application that aids users in finding the best online courses
 #### Team Name: SheCode
 
 
+
 ### ❤️Team Members
 - Member 1: Anna Geo - SCMS School of Engineering & Technology
 - Member 2: Anusree K P - SCMS School of Engineering & Technology
 - Member 3: Krishnendu C - SCMS School of Engineering & Technology
 
 
+
+
 ### Project Description🗣️
 The AI-Powered Course Finder Web App is a smart platform that provides users with a way to find the best suitable online courses based on their preferences. The app pulls real-time course data from popular e-learning servers, including Coursera, Udemy, and youtube, using web scraping and APIs, arranges the data into structured databases, and presents personalized course recommendations via an intuitive web interface. 
+
+
+
 
 ### The Problem statement📜
 
 With the inexorable rise of online learning platforms such as Coursera, Udemy, youtube students and professionals alike have found it increasingly impossible to easily find the right course for themselves, based on things such as their own interest, budget, and competence level. Existing platforms do not offer a centralized AI-enabled solution that can help compare courses from multiple providers.
 
 EduNinja, our solution, aims to eradicate this problem by putting users able to search, filter, and receive personalized recommendations with course data aggregated from various e-learning platforms, in one place. With the help of web scraping, APIs, and suggestions based on AI, we have set out to ease the process of course selection and enhance the learning experience for users. 
+
+
+
 
 ### The Solution🛠️
 
@@ -43,6 +52,8 @@ No more browsing over the Zoom way. 📱💻
 ⚡ 5️⃣ Built for Speed – No Lag, No Drama!
 We have quite a speedy optimized database for storing all course data neatly (no clutter inside us 🔥). And with our backend, searching is smooth, results are delivered in no time, and you get what you want in seconds! ⏳🚀 
 
+
+
 ## Technical Details
 ### Technologies/Components Used
 For Software:
@@ -50,6 +61,8 @@ For Software:
 - frameworks: Flask, Jinja2, CSS. dotenv, API
 - libraries: Flask, Jinja2, python-dotenv, Requests, Flask-SQLAlchemy, Flask-CORS, 
 - tools: VSCode, Git, Github,flask, OpenAI API
+
+
 
 
 ### Project Documentation
@@ -61,9 +74,11 @@ For Software:
 
 
 
+
 # Build Photos
 [BUILD ERROR CRY REPEAT
 ](https://drive.google.com/drive/folders/1JXnVLTHI04vSGZtLVHka6afb_gNM1PW7?usp=drive_link)
+
 
 
 
